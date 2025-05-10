@@ -5,16 +5,15 @@ class CustomDialog(tk.Toplevel):
     def __init__(self, parent, title="Input", prompt="Masukkan teks:"):
         super().__init__(parent)
         self.title(title)
-        self.geometry("350x200")
         self.configure(bg="#1E1E1E")
         self.resizable(False, False)
-        
+
         self.result = None
 
         tk.Label(self, text=prompt, font=("Poppins", 12), bg="#1E1E1E", fg="#D1D1D1").pack(pady=10)
         
         self.entry = tk.Entry(self, font=("Poppins", 12), width=30, bg="#2B2B2B", fg="white", bd=0, insertbackground="white")
-        self.entry.pack(pady=5, padx=20)
+        self.entry.pack(pady=5, padx=20, fill="x")
         self.entry.focus()
         
         btn_frame = tk.Frame(self, bg="#1E1E1E")
@@ -37,18 +36,17 @@ class TodoApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Dark To-Do List")
-        self.root.geometry("500x600")
         self.root.configure(bg="#121212")
         
         self.header = tk.Frame(self.root, bg="#1E1E1E", height=60)
-        self.header.pack(fill="x")
+        self.header.grid(row=0, column=0, sticky="ew") # Changed to grid
         tk.Label(self.header, text="To-Do List", font=("Poppins", 18, "bold"), bg="#1E1E1E", fg="white").pack(side="left", padx=20, pady=15)
         
         self.add_button = tk.Button(self.header, text="+", font=("Poppins", 16, "bold"), bg="#3A7D44", fg="white", width=3, bd=0, relief="flat", command=self.add_task_popup)
         self.add_button.pack(side="right", padx=20)
 
         self.task_frame = tk.Frame(self.root, bg="#121212")
-        self.task_frame.pack(fill="both", expand=True, pady=10)
+        self.task_frame.grid(row=1, column=0, sticky="nsew") # Changed to grid
 
         # Placeholder jika tidak ada tugas
         self.placeholder_label = tk.Label(self.task_frame, text="Belum ada tugas", font=("Poppins", 14, "italic"), fg="#888888", bg="#121212")
@@ -56,10 +54,16 @@ class TodoApp:
 
         # Tombol Hapus Semua
         self.clear_all_button = tk.Button(self.root, text="Hapus Semua", font=("Poppins", 12, "bold"), bg="#D9534F", fg="white", bd=0, relief="flat", command=self.clear_all_tasks)
-        self.clear_all_button.pack(pady=10)
-        self.clear_all_button.pack_forget()  # Sembunyikan dulu
+        self.clear_all_button.grid(row=2, column=0, sticky="s") # Changed to grid
+        self.clear_all_button.pack_forget()
 
         self.tasks = []
+        
+        self.root.resizable(True, True)
+        self.root.grid_rowconfigure(0, weight=0)
+        self.root.grid_rowconfigure(1, weight=1)
+        self.root.grid_rowconfigure(2, weight=0)
+        self.root.grid_columnconfigure(0, weight=1)
 
     def add_task_popup(self):
         dialog = CustomDialog(self.root, "Tambah Tugas", "Masukkan tugas baru:")
@@ -71,8 +75,8 @@ class TodoApp:
         task_frame = tk.Frame(self.task_frame, bg="#2B2B2B", bd=2, relief="groove")
         task_frame.pack(pady=5, padx=10, fill="x")
         
-        task_label = tk.Label(task_frame, text=task_text, font=("Poppins", 12), bg="#2B2B2B", fg="white")
-        task_label.pack(side="left", padx=10)
+        task_label = tk.Label(task_frame, text=task_text, font=("Poppins", 12), bg="#2B2B2B", fg="white", wraplength=400)
+        task_label.pack(side="left", padx=10, fill="x", expand=True)
         
         edit_button = tk.Button(task_frame, text="✏️", font=("Poppins", 12, "bold"), bg="#3A7D44", fg="white", bd=0, relief="flat", command=lambda: self.edit_task(task_label))
         edit_button.pack(side="right", padx=5)
@@ -123,3 +127,4 @@ if __name__ == "__main__":
     root = tk.Tk()
     app = TodoApp(root)
     root.mainloop()
+        
